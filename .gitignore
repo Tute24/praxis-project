@@ -1,0 +1,16 @@
+# Segredos (AC-09)
+.env
+.env.local
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+.next/
+
+# OS
+Thumbs.db
+.DS_Store
