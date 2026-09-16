@@ -36,6 +36,14 @@ _Avoid_: evento de domínio, DTO de evento
 O pedaço de texto que chega dentro de um evento de stream do modelo. Vários tokens formam um rascunho.
 _Avoid_: chunk, delta, parte
 
+**Corrida completa**:
+Uma corrida que chegou ao fim por conta própria, reconhecível pelo evento de fim da última passada do modelo. É a única forma de saber que não falta mais nada.
+_Avoid_: sucesso, fim do stream
+
+**Stream morto**:
+Um stream que fechou sem corrida completa. A API não anuncia a morte; o cliente a conclui pela ausência do fim normal.
+_Avoid_: erro, falha, timeout
+
 ### Estado do cliente
 
 **Step**:
