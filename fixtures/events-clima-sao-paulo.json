@@ -1,0 +1,2536 @@
+{
+  "message": "Qual o clima em São Paulo?",
+  "events": [
+    {
+      "event": "on_chat_model_start",
+      "data": {
+        "event": "on_chat_model_start",
+        "data": {
+          "input": {
+            "messages": [
+              {
+                "role": "user",
+                "content": "Qual o clima em São Paulo?"
+              }
+            ]
+          }
+        },
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+              "tool_calls": [
+                {
+                  "name": "get_weather",
+                  "args": {},
+                  "id": "call_ANlF3KKCpxA53tz0jxDS3FGu",
+                  "type": "tool_call"
+                }
+              ],
+              "tool_call_chunks": [
+                {
+                  "name": "get_weather",
+                  "args": "",
+                  "id": "call_ANlF3KKCpxA53tz0jxDS3FGu",
+                  "index": 0,
+                  "type": "tool_call_chunk"
+                }
+              ],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+              "tool_calls": [
+                {
+                  "name": "",
+                  "args": {},
+                  "id": null,
+                  "type": "tool_call"
+                }
+              ],
+              "tool_call_chunks": [
+                {
+                  "name": null,
+                  "args": "{\"",
+                  "id": null,
+                  "index": 0,
+                  "type": "tool_call_chunk"
+                }
+              ],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+              "invalid_tool_calls": [
+                {
+                  "name": null,
+                  "args": "city",
+                  "id": null,
+                  "error": null,
+                  "type": "invalid_tool_call"
+                }
+              ],
+              "tool_call_chunks": [
+                {
+                  "name": null,
+                  "args": "city",
+                  "id": null,
+                  "index": 0,
+                  "type": "tool_call_chunk"
+                }
+              ],
+              "tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+              "invalid_tool_calls": [
+                {
+                  "name": null,
+                  "args": "\":\"",
+                  "id": null,
+                  "error": null,
+                  "type": "invalid_tool_call"
+                }
+              ],
+              "tool_call_chunks": [
+                {
+                  "name": null,
+                  "args": "\":\"",
+                  "id": null,
+                  "index": 0,
+                  "type": "tool_call_chunk"
+                }
+              ],
+              "tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+              "invalid_tool_calls": [
+                {
+                  "name": null,
+                  "args": "São",
+                  "id": null,
+                  "error": null,
+                  "type": "invalid_tool_call"
+                }
+              ],
+              "tool_call_chunks": [
+                {
+                  "name": null,
+                  "args": "São",
+                  "id": null,
+                  "index": 0,
+                  "type": "tool_call_chunk"
+                }
+              ],
+              "tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+              "invalid_tool_calls": [
+                {
+                  "name": null,
+                  "args": " Paulo",
+                  "id": null,
+                  "error": null,
+                  "type": "invalid_tool_call"
+                }
+              ],
+              "tool_call_chunks": [
+                {
+                  "name": null,
+                  "args": " Paulo",
+                  "id": null,
+                  "index": 0,
+                  "type": "tool_call_chunk"
+                }
+              ],
+              "tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+              "invalid_tool_calls": [
+                {
+                  "name": null,
+                  "args": "\"}",
+                  "id": null,
+                  "error": null,
+                  "type": "invalid_tool_call"
+                }
+              ],
+              "tool_call_chunks": [
+                {
+                  "name": null,
+                  "args": "\"}",
+                  "id": null,
+                  "index": 0,
+                  "type": "tool_call_chunk"
+                }
+              ],
+              "tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "response_metadata": {
+                "finish_reason": "tool_calls",
+                "model_name": "gpt-4o-mini-2024-07-18",
+                "system_fingerprint": "fp_004eee8c45",
+                "service_tier": "default",
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+              "usage_metadata": {
+                "input_tokens": 52,
+                "output_tokens": 15,
+                "total_tokens": 67,
+                "input_token_details": {
+                  "audio": 0,
+                  "cache_read": 0
+                },
+                "output_token_details": {
+                  "audio": 0,
+                  "reasoning": 0
+                }
+              },
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+              "chunk_position": "last",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_end",
+      "data": {
+        "event": "on_chat_model_end",
+        "data": {
+          "output": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessage"
+            ],
+            "kwargs": {
+              "content": "",
+              "response_metadata": {
+                "finish_reason": "tool_calls",
+                "model_name": "gpt-4o-mini-2024-07-18",
+                "system_fingerprint": "fp_004eee8c45",
+                "service_tier": "default",
+                "model_provider": "openai"
+              },
+              "type": "ai",
+              "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+              "tool_calls": [
+                {
+                  "name": "get_weather",
+                  "args": {
+                    "city": "São Paulo"
+                  },
+                  "id": "call_ANlF3KKCpxA53tz0jxDS3FGu",
+                  "type": "tool_call"
+                }
+              ],
+              "usage_metadata": {
+                "input_tokens": 52,
+                "output_tokens": 15,
+                "total_tokens": 67,
+                "input_token_details": {
+                  "audio": 0,
+                  "cache_read": 0
+                },
+                "output_token_details": {
+                  "audio": 0,
+                  "reasoning": 0
+                }
+              },
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-991d-79f2-9621-48dee0e27d59",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 1,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "checkpoint_ns": "chatbot:646f0ad6-171f-e1a5-6216-8e2d35b94889",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-991b-7870-95bc-1e0f157e3a39"
+        ]
+      }
+    },
+    {
+      "event": "on_tool_start",
+      "data": {
+        "event": "on_tool_start",
+        "data": {
+          "input": {
+            "city": "São Paulo"
+          }
+        },
+        "name": "get_weather",
+        "tags": [
+          "seq:step:1"
+        ],
+        "run_id": "01a0a7a5-9ea0-7a03-93b6-17545a9f0df2",
+        "metadata": {
+          "ls_integration": "langgraph",
+          "langgraph_step": 2,
+          "langgraph_node": "tools",
+          "langgraph_triggers": [
+            "branch:to:tools"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "tools"
+          ],
+          "langgraph_checkpoint_ns": "tools:bbce02ba-7027-0f52-044f-2b7d558c63b2",
+          "checkpoint_ns": "tools:bbce02ba-7027-0f52-044f-2b7d558c63b2"
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-9ea0-7a03-93b6-174a82ab90f5"
+        ]
+      }
+    },
+    {
+      "event": "on_tool_end",
+      "data": {
+        "event": "on_tool_end",
+        "data": {
+          "output": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "ToolMessage"
+            ],
+            "kwargs": {
+              "content": "{\"city\": \"São Paulo\", \"temp_c\": 22, \"condition\": \"parcialmente nublado\"}",
+              "type": "tool",
+              "name": "get_weather",
+              "tool_call_id": "call_ANlF3KKCpxA53tz0jxDS3FGu",
+              "status": "success"
+            }
+          },
+          "input": {
+            "city": "São Paulo"
+          }
+        },
+        "run_id": "01a0a7a5-9ea0-7a03-93b6-17545a9f0df2",
+        "name": "get_weather",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langgraph",
+          "langgraph_step": 2,
+          "langgraph_node": "tools",
+          "langgraph_triggers": [
+            "branch:to:tools"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "tools"
+          ],
+          "langgraph_checkpoint_ns": "tools:bbce02ba-7027-0f52-044f-2b7d558c63b2",
+          "checkpoint_ns": "tools:bbce02ba-7027-0f52-044f-2b7d558c63b2"
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-9ea0-7a03-93b6-174a82ab90f5"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_start",
+      "data": {
+        "event": "on_chat_model_start",
+        "data": {
+          "input": {
+            "messages": [
+              [
+                {
+                  "lc": 1,
+                  "type": "constructor",
+                  "id": [
+                    "langchain",
+                    "schema",
+                    "messages",
+                    "HumanMessage"
+                  ],
+                  "kwargs": {
+                    "content": "Qual o clima em São Paulo?",
+                    "type": "human",
+                    "id": "47896eb1-5d3e-4565-a145-0dd6600cafc6"
+                  }
+                },
+                {
+                  "lc": 1,
+                  "type": "constructor",
+                  "id": [
+                    "langchain",
+                    "schema",
+                    "messages",
+                    "AIMessage"
+                  ],
+                  "kwargs": {
+                    "content": "",
+                    "response_metadata": {
+                      "finish_reason": "tool_calls",
+                      "model_name": "gpt-4o-mini-2024-07-18",
+                      "system_fingerprint": "fp_004eee8c45",
+                      "service_tier": "default",
+                      "model_provider": "openai"
+                    },
+                    "type": "ai",
+                    "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+                    "tool_calls": [
+                      {
+                        "name": "get_weather",
+                        "args": {
+                          "city": "São Paulo"
+                        },
+                        "id": "call_ANlF3KKCpxA53tz0jxDS3FGu",
+                        "type": "tool_call"
+                      }
+                    ],
+                    "usage_metadata": {
+                      "input_tokens": 52,
+                      "output_tokens": 15,
+                      "total_tokens": 67,
+                      "input_token_details": {
+                        "audio": 0,
+                        "cache_read": 0
+                      },
+                      "output_token_details": {
+                        "audio": 0,
+                        "reasoning": 0
+                      }
+                    },
+                    "invalid_tool_calls": []
+                  }
+                },
+                {
+                  "lc": 1,
+                  "type": "constructor",
+                  "id": [
+                    "langchain",
+                    "schema",
+                    "messages",
+                    "ToolMessage"
+                  ],
+                  "kwargs": {
+                    "content": "{\"city\": \"São Paulo\", \"temp_c\": 22, \"condition\": \"parcialmente nublado\"}",
+                    "type": "tool",
+                    "name": "get_weather",
+                    "id": "017bceed-d4f2-4886-b9f3-82bd038c9524",
+                    "tool_call_id": "call_ANlF3KKCpxA53tz0jxDS3FGu",
+                    "status": "success"
+                  }
+                }
+              ]
+            ]
+          }
+        },
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "O",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " clima",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " em",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " São",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " Paulo",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " está",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " parcialmente",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " n",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "ublado",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": ",",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " com",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " uma",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " temperatura",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " de",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": " ",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "22",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "°C",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": ".",
+              "response_metadata": {
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "response_metadata": {
+                "finish_reason": "stop",
+                "model_name": "gpt-4o-mini-2024-07-18",
+                "system_fingerprint": "fp_004eee8c45",
+                "service_tier": "default",
+                "model_provider": "openai"
+              },
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "usage_metadata": {
+                "input_tokens": 99,
+                "output_tokens": 19,
+                "total_tokens": 118,
+                "input_token_details": {
+                  "audio": 0,
+                  "cache_read": 0
+                },
+                "output_token_details": {
+                  "audio": 0,
+                  "reasoning": 0
+                }
+              },
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_stream",
+      "data": {
+        "event": "on_chat_model_stream",
+        "data": {
+          "chunk": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessageChunk"
+            ],
+            "kwargs": {
+              "content": "",
+              "type": "AIMessageChunk",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "chunk_position": "last",
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    },
+    {
+      "event": "on_chat_model_end",
+      "data": {
+        "event": "on_chat_model_end",
+        "data": {
+          "output": {
+            "lc": 1,
+            "type": "constructor",
+            "id": [
+              "langchain",
+              "schema",
+              "messages",
+              "AIMessage"
+            ],
+            "kwargs": {
+              "content": "O clima em São Paulo está parcialmente nublado, com uma temperatura de 22°C.",
+              "response_metadata": {
+                "finish_reason": "stop",
+                "model_name": "gpt-4o-mini-2024-07-18",
+                "system_fingerprint": "fp_004eee8c45",
+                "service_tier": "default",
+                "model_provider": "openai"
+              },
+              "type": "ai",
+              "id": "lc_run--01a0a7a5-a679-7932-abdd-2dac3b765adf",
+              "usage_metadata": {
+                "input_tokens": 99,
+                "output_tokens": 19,
+                "total_tokens": 118,
+                "input_token_details": {
+                  "audio": 0,
+                  "cache_read": 0
+                },
+                "output_token_details": {
+                  "audio": 0,
+                  "reasoning": 0
+                }
+              },
+              "tool_calls": [],
+              "invalid_tool_calls": []
+            }
+          },
+          "input": {
+            "messages": [
+              [
+                {
+                  "lc": 1,
+                  "type": "constructor",
+                  "id": [
+                    "langchain",
+                    "schema",
+                    "messages",
+                    "HumanMessage"
+                  ],
+                  "kwargs": {
+                    "content": "Qual o clima em São Paulo?",
+                    "type": "human",
+                    "id": "47896eb1-5d3e-4565-a145-0dd6600cafc6"
+                  }
+                },
+                {
+                  "lc": 1,
+                  "type": "constructor",
+                  "id": [
+                    "langchain",
+                    "schema",
+                    "messages",
+                    "AIMessage"
+                  ],
+                  "kwargs": {
+                    "content": "",
+                    "response_metadata": {
+                      "finish_reason": "tool_calls",
+                      "model_name": "gpt-4o-mini-2024-07-18",
+                      "system_fingerprint": "fp_004eee8c45",
+                      "service_tier": "default",
+                      "model_provider": "openai"
+                    },
+                    "type": "ai",
+                    "id": "lc_run--01a0a7a5-991d-79f2-9621-48dee0e27d59",
+                    "tool_calls": [
+                      {
+                        "name": "get_weather",
+                        "args": {
+                          "city": "São Paulo"
+                        },
+                        "id": "call_ANlF3KKCpxA53tz0jxDS3FGu",
+                        "type": "tool_call"
+                      }
+                    ],
+                    "usage_metadata": {
+                      "input_tokens": 52,
+                      "output_tokens": 15,
+                      "total_tokens": 67,
+                      "input_token_details": {
+                        "audio": 0,
+                        "cache_read": 0
+                      },
+                      "output_token_details": {
+                        "audio": 0,
+                        "reasoning": 0
+                      }
+                    },
+                    "invalid_tool_calls": []
+                  }
+                },
+                {
+                  "lc": 1,
+                  "type": "constructor",
+                  "id": [
+                    "langchain",
+                    "schema",
+                    "messages",
+                    "ToolMessage"
+                  ],
+                  "kwargs": {
+                    "content": "{\"city\": \"São Paulo\", \"temp_c\": 22, \"condition\": \"parcialmente nublado\"}",
+                    "type": "tool",
+                    "name": "get_weather",
+                    "id": "017bceed-d4f2-4886-b9f3-82bd038c9524",
+                    "tool_call_id": "call_ANlF3KKCpxA53tz0jxDS3FGu",
+                    "status": "success"
+                  }
+                }
+              ]
+            ]
+          }
+        },
+        "run_id": "01a0a7a5-a679-7932-abdd-2dac3b765adf",
+        "name": "ChatOpenAI",
+        "tags": [
+          "seq:step:1"
+        ],
+        "metadata": {
+          "ls_integration": "langchain_chat_model",
+          "langgraph_step": 3,
+          "langgraph_node": "chatbot",
+          "langgraph_triggers": [
+            "branch:to:chatbot"
+          ],
+          "langgraph_path": [
+            "__pregel_pull",
+            "chatbot"
+          ],
+          "langgraph_checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "checkpoint_ns": "chatbot:e3c6d5ec-b0e9-2d43-ee42-94f5b546b88e",
+          "ls_provider": "openai",
+          "ls_model_name": "gpt-4o-mini",
+          "ls_model_type": "chat",
+          "ls_temperature": 0.0,
+          "lc_versions": {
+            "langchain-core": "1.6.3",
+            "langchain-openai": "1.6.2"
+          }
+        },
+        "parent_ids": [
+          "01a0a7a5-9916-7d41-826f-6ed9481ed472",
+          "01a0a7a5-a679-7932-abdd-2d9a211fb8ac"
+        ]
+      }
+    }
+  ]
+}
