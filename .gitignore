@@ -7,6 +7,12 @@
 __pycache__/
 *.pyc
 
+# Caches de ferramenta. Na pratica eles ja se auto-ignoram (ruff e pytest
+# deixam um .gitignore dentro do proprio diretorio), mas depender disso e
+# depender da gentileza da ferramenta.
+.ruff_cache/
+.pytest_cache/
+
 # Node
 node_modules/
 .next/
