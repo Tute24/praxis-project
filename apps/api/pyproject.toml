@@ -21,6 +21,11 @@ dev = [
     "anyio>=4.6",
 ]
 
+[tool.ruff.lint]
+# Explicito de proposito: sem config, o ruff usa os defaults DELE, que mudam de
+# versao para versao. Pinar aqui faz o editor e a linha de comando concordarem.
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]

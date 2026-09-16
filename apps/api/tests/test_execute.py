@@ -15,8 +15,8 @@ encoder de verdade, e nao so o framing.
 """
 
 import json
+from collections.abc import AsyncIterator
 from pathlib import Path
-from typing import AsyncIterator
 
 import pytest
 from httpx import ASGITransport, AsyncClient

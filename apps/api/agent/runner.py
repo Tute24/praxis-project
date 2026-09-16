@@ -12,7 +12,8 @@ Traduzir para um tipo proprio e traduzir de volta pagaria duas conversoes para
 chegar no mesmo byte. Ver docs/adr/0001-evento-cru-no-fio.md.
 """
 
-from typing import AsyncIterator, Protocol
+from collections.abc import AsyncIterator
+from typing import Protocol
 
 from langchain_core.runnables.schema import StreamEvent
 from langgraph.graph.state import CompiledStateGraph

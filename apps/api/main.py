@@ -5,9 +5,10 @@ SSE mora em `sse.py`. Este arquivo so liga os dois (issue #5).
 """
 
 import logging
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import AsyncIterator
+from typing import Annotated
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Request
@@ -53,7 +54,7 @@ class ExecuteRequest(BaseModel):
 @app.post("/agent/execute")
 async def execute(
     body: ExecuteRequest,
-    runner: AgentRunner = Depends(get_runner),
+    runner: Annotated[AgentRunner, Depends(get_runner)],
 ) -> StreamingResponse:
     async def event_stream() -> AsyncIterator[str]:
         # `async def` obrigatorio: um generator sync faria o Starlette gastar um
