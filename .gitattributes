@@ -1,0 +1,10 @@
+# O repo guarda tudo em LF. `core.autocrlf=input` fazia a conversao na surdina e
+# avisava a cada `git add`; aqui a regra fica explicita e vale para qualquer
+# maquina que clonar, sem depender da config local de ninguem.
+* text=auto eol=lf
+
+# Binarios: nunca tocar.
+*.png binary
+*.jpg binary
+*.pdf binary
+*.ico binary

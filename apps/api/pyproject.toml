@@ -1,0 +1,31 @@
+[project]
+name = "praxis-api"
+version = "0.1.0"
+description = "P1 Praxis - agente de clima com streaming SSE"
+requires-python = ">=3.10"
+dependencies = [
+    # Pinados pelo ticket de versoes (issue #2): compativeis entre si.
+    "langchain-core==1.6.3",
+    "langgraph==1.2.11",
+    "langchain-openai==1.6.2",
+    "fastapi>=0.115",
+    "uvicorn>=0.32",
+    "python-dotenv>=1.0",
+    # so para o script que grava a fixture
+    "httpx>=0.27",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "anyio>=4.6",
+]
+
+[tool.ruff.lint]
+# Explicito de proposito: sem config, o ruff usa os defaults DELE, que mudam de
+# versao para versao. Pinar aqui faz o editor e a linha de comando concordarem.
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
