@@ -40,11 +40,13 @@ def parse_frames(raw: str) -> list[dict]:
 async def main() -> None:
     message = sys.argv[1] if len(sys.argv) > 1 else "Qual o clima em Sao Paulo?"
     raw = ""
-    async with httpx.AsyncClient(timeout=120) as client:
-        async with client.stream("POST", API, json={"message": message}) as response:
-            response.raise_for_status()
-            async for chunk in response.aiter_text():
-                raw += chunk
+    async with (
+        httpx.AsyncClient(timeout=120) as client,
+        client.stream("POST", API, json={"message": message}) as response,
+    ):
+        response.raise_for_status()
+        async for chunk in response.aiter_text():
+            raw += chunk
 
     frames = parse_frames(raw)
     OUT.parent.mkdir(parents=True, exist_ok=True)

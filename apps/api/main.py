@@ -1,107 +1,83 @@
-"""Esqueleto vertical do P1: POST /agent/execute -> eventos crus em SSE.
+"""A casca HTTP: FastAPI, ciclo de vida do grafo, e a rota do AC-01.
 
-Deliberadamente burro e acoplado (issue #4): grafo montado inline, rota iterando
-o stream, tudo num arquivo so. O objetivo aqui e ver o dado verdadeiro sair no
-`curl -N`; a separacao de responsabilidades e o proximo ticket.
+Tudo que sabe o que e um grafo mora em `agent/`; tudo que sabe o que e um byte
+SSE mora em `sse.py`. Este arquivo so liga os dois (issue #5).
 """
 
-import asyncio
-import json
+import logging
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, Request
 from fastapi.responses import StreamingResponse
-from langchain_core.load import dumpd
-from langchain_core.runnables.schema import StreamEvent
-from langchain_core.tools import tool
-from langchain_openai import ChatOpenAI
-from langgraph.graph import START, StateGraph
-from langgraph.graph.message import add_messages
-from langgraph.prebuilt import ToolNode, tools_condition
 from pydantic import BaseModel
-from typing_extensions import TypedDict
+
+from agent.graph import build_graph
+from agent.runner import AgentRunner, LangGraphRunner
+from sse import to_sse
 
 # AC-09: o segredo vive no .env da RAIZ do repo, nao dentro de apps/api.
 REPO_ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(REPO_ROOT / ".env")
 
-
-# --- AC-03: a tool -----------------------------------------------------------
-
-
-@tool
-async def get_weather(city: str) -> dict:
-    """Consulta o clima atual de uma cidade."""
-    # `async def` + `asyncio.sleep`: os 2s do enunciado simulam I/O, e I/O
-    # simulado nao pode bloquear o event loop (restricao transversal do mapa).
-    await asyncio.sleep(2)
-    return {"city": city, "temp_c": 22, "condition": "parcialmente nublado"}
+log = logging.getLogger(__name__)
 
 
-TOOLS = [get_weather]
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """Constroi o grafo UMA vez, no start do processo.
+
+    O grafo e construido uma vez e corrido muitas (CONTEXT.md), entao o lugar
+    dele e aqui -- nao no import do modulo e muito menos por request. Construcao
+    eager de proposito: se `OPENAI_API_KEY` faltar, o app nao sobe, em vez de
+    falhar no primeiro request (issue #5).
+    """
+    app.state.runner = LangGraphRunner(build_graph())
+    yield
 
 
-# --- AC-03: o grafo ----------------------------------------------------------
+app = FastAPI(title="Praxis P1 - agente de clima", lifespan=lifespan)
 
 
-class State(TypedDict):
-    messages: Annotated[list, add_messages]
-
-
-# streaming=True e redundante dentro de astream_events (o handler de eventos ja
-# liga o streaming sozinho), mas deixa a intencao explicita. Ver issue #2.
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, streaming=True)
-llm_with_tools = llm.bind_tools(TOOLS)
-
-
-async def chatbot(state: State) -> dict:
-    return {"messages": [await llm_with_tools.ainvoke(state["messages"])]}
-
-
-builder = StateGraph(State)
-builder.add_node("chatbot", chatbot)
-# O no PRECISA se chamar "tools": e a string literal que `tools_condition` devolve.
-builder.add_node("tools", ToolNode(TOOLS))
-builder.add_edge(START, "chatbot")
-builder.add_conditional_edges("chatbot", tools_condition)  # -> "tools" ou END
-builder.add_edge("tools", "chatbot")  # ida e volta
-graph = builder.compile()
-
-
-# --- AC-01 / AC-04 / AC-05: HTTP + stream + SSE ------------------------------
-
-
-app = FastAPI(title="Praxis P1 - agente de clima")
+def get_runner(request: Request) -> AgentRunner:
+    """O seam por onde o teste entra: `app.dependency_overrides[get_runner]`."""
+    return request.app.state.runner
 
 
 class ExecuteRequest(BaseModel):
     message: str
 
 
-def to_sse(event: StreamEvent) -> str:
-    """Um StreamEvent vira um frame SSE.
-
-    AC-05: `event:` e o campo `event` do StreamEvent; `data:` e o StreamEvent
-    INTEIRO serializado. `json.dumps` puro quebraria aqui (o `data` carrega
-    AIMessageChunk / ToolMessage), entao passa por `dumpd` antes. Ver issue #2.
-    """
-    payload = json.dumps(dumpd(event), ensure_ascii=False)
-    return f"event: {event['event']}\ndata: {payload}\n\n"
-
-
 @app.post("/agent/execute")
-async def execute(request: ExecuteRequest) -> StreamingResponse:
-    async def event_stream():
+async def execute(
+    body: ExecuteRequest,
+    runner: Annotated[AgentRunner, Depends(get_runner)],
+) -> StreamingResponse:
+    async def event_stream() -> AsyncIterator[str]:
         # `async def` obrigatorio: um generator sync faria o Starlette gastar um
         # worker do threadpool por conexao, e nao teria checkpoint de
         # cancelamento. Ver issue #3.
-        async for event in graph.astream_events(
-            {"messages": [{"role": "user", "content": request.message}]},
-            version="v2",
-            include_types=["chat_model", "tool"],
-        ):
-            yield to_sse(event)
+        try:
+            async for event in runner.astream(body.message):
+                yield to_sse(event)
+        except Exception:
+            # Erro DEPOIS do primeiro byte: os headers ja foram, entao nao da
+            # para virar 500, e o AC-06 proibe inventar um `event: error`.
+            # Logar e fechar e o que sobra. O cliente distingue fim normal de
+            # morte pela ausencia do `on_chat_model_end` com
+            # finish_reason "stop" -- leitura do observador, como a latencia
+            # (CONTEXT.md: "Corrida completa" / "Stream morto").
+            #
+            # Nao ha hierarquia de AppError nem exception handler neste app de
+            # proposito: handler do FastAPI so age ANTES do primeiro byte, e
+            # todos os casos de la ja tem dono (corpo invalido -> 422 do
+            # Pydantic; chave ausente -> o app nao sobe). O unico caminho de
+            # erro real e justamente o que um handler nao alcanca (issue #5).
+            log.exception("corrida morreu no meio do stream")
+        # CancelledError NAO cai aqui (BaseException): disconnect e cancelamento
+        # normal, tratado pelo proprio astream_events, e nao deve ser engolido.
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
