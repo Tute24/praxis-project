@@ -14,9 +14,10 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from langchain_core.load import dumpd
+from langchain_core.runnables.schema import StreamEvent
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
-from langgraph.graph import StateGraph, START
+from langgraph.graph import START, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
 from pydantic import BaseModel
@@ -79,7 +80,7 @@ class ExecuteRequest(BaseModel):
     message: str
 
 
-def to_sse(event: dict) -> str:
+def to_sse(event: StreamEvent) -> str:
     """Um StreamEvent vira um frame SSE.
 
     AC-05: `event:` e o campo `event` do StreamEvent; `data:` e o StreamEvent
