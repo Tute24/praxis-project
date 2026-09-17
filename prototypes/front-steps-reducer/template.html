@@ -57,6 +57,7 @@
   .faixa-fill { height: 100%; border-radius: 999px; background: var(--accent); width: 6%; transition: width .35s ease; }
   .faixa-fill.pensando { width: 15%; }
   .faixa-fill.tool { background: #b45309; animation: cresce 5s cubic-bezier(.2,.8,.3,1) forwards; }
+  .faixa-fill.tool.travada { width: 88%; animation: none; }
   .faixa-fill.texto { width: 88%; }
   .faixa-fill.completa { width: 100%; background: var(--ok); }
   .faixa-fill.morta { width: 100%; background: var(--err); }
@@ -318,6 +319,19 @@ function progressoDaCorrida(estado) {
   const cara = aparencia(ultimo, estado.status);
   if (cara === "rodando") return { fase: "tool", rotulo: `Consultando ${ultimo.nome}…` };
   if (cara === "streamando") return { fase: "texto", rotulo: "Escrevendo a resposta…" };
+
+  // A barra SEGURA em "Consultando" ate o primeiro token da passada seguinte.
+  // Entre o on_tool_end e o on_chat_model_start da passada 2 o grafo ainda esta
+  // voltando com o resultado; piscar "Pensando" ali e ruido, nao informacao.
+  const iTool = estado.steps.map((s) => s.tipo).lastIndexOf("chamada_de_tool");
+  if (iTool >= 0) {
+    const escreveuDepois = estado.steps
+      .slice(iTool)
+      .some((s) => s.tipo === "texto" && (s.rascunho !== "" || (s.final ?? "") !== ""));
+    if (!escreveuDepois) {
+      return { fase: "tool", travada: true, rotulo: `Consultando ${estado.steps[iTool].nome}…` };
+    }
+  }
   return { fase: "pensando", rotulo: "Pensando…" };
 }
 
@@ -531,7 +545,7 @@ function render() {
     <div class="meta">pergunta: <b>${esc(estado.mensagem)}</b></div>
     <div class="meta">eventos lidos do fio: ${lidos} de ${FIXTURE.events.length} · relógio simulado: ${relogio} ms ·
       status: <span class="status ${estado.status}">${estado.status}</span></div>
-    <div class="faixa"><div class="faixa-fill ${progresso.fase}"></div></div>
+    <div class="faixa"><div class="faixa-fill ${progresso.fase}${progresso.travada ? " travada" : ""}"></div></div>
     <div class="meta">${esc(progresso.rotulo)}</div>
     <div style="margin-top:14px">${estado.steps.map(renderStep).join("") || '<span class="vazio">nenhum step ainda</span>'}</div>
     ${renderDados()}
