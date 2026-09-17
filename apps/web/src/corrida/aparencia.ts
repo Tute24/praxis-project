@@ -27,17 +27,21 @@ export type Aparencia =
  * Um stream morto congela o que estava em movimento: vira `interrompido`.
  */
 export function aparencia(step: Step, status: StatusDaCorrida): Aparencia {
-  const emMovimento = status === "correndo";
+  // So a MORTE congela um step, nao o fim da corrida: o "stop" chega no fim da
+  // ultima passada, e uma passada anterior que ficou sem `final` nao foi
+  // interrompida -- ela so nunca fechou. Testar `!== "correndo"` aqui pintaria
+  // uma corrida completa como stream morto.
+  const morreu = status === "morta";
   if (step.tipo === "texto") {
     if (step.final === null) {
       const cara: Aparencia = step.rascunho === "" ? "pensando" : "streamando";
-      return emMovimento ? cara : "interrompido";
+      return morreu ? "interrompido" : cara;
     }
     // "" = a passada que so pediu a tool; ela existe, mas nao escreveu nada.
     return step.final === "" ? "pensou" : "final";
   }
   if (step.tipo === "chamada_de_tool") {
-    if (step.terminouEm === null) return emMovimento ? "rodando" : "interrompido";
+    if (step.terminouEm === null) return morreu ? "interrompido" : "rodando";
     return "chamada";
   }
   return step.tipo === "erro_de_tool" ? "erro" : "resultado";

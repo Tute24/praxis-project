@@ -133,10 +133,8 @@ export class ApiIndisponivel extends Error {}
  */
 export async function* abrirCorrida(
   mensagem: string,
-  opcoes: { sinal?: AbortSignal; agora?: () => number } = {},
+  opcoes: { sinal?: AbortSignal } = {},
 ): AsyncGenerator<EventoPlano> {
-  const agora = opcoes.agora ?? (() => Date.now());
-
   let resposta: Response;
   try {
     resposta = await fetch(`${URL_DA_API}/agent/execute`, {
@@ -162,7 +160,7 @@ export async function* abrirCorrida(
       const { done, value } = await leitor.read();
       if (done) return;
       for (const frame of parser.empurrar(value)) {
-        yield desembrulhar(frame.data, agora());
+        yield desembrulhar(frame.data, Date.now());
       }
     }
   } finally {

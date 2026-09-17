@@ -47,6 +47,3 @@ export function tocar(ate = Number.POSITIVE_INFINITY): Estado {
 
 /** O mesmo, mas com o fio fechando depois: e assim que "morta" aparece. */
 export const tocarEFechar = (ate = Number.POSITIVE_INFINITY): Estado => fecharStream(tocar(ate));
-
-export const frameDoTipo = (tipo: string): Frame =>
-  fixture.events.find((f) => f.event === tipo)!;

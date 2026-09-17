@@ -7,63 +7,83 @@
 
 import type { Aparencia } from "@/corrida/aparencia";
 import { aparencia } from "@/corrida/aparencia";
-import type { StatusDaCorrida, Step } from "@/corrida/steps";
+import type {
+  StatusDaCorrida,
+  Step,
+  StepDeChamada,
+  StepDeErro,
+  StepDeResultado,
+  StepDeTexto,
+} from "@/corrida/steps";
 
 const json = (v: unknown) => JSON.stringify(v, null, 2);
 
-const RENDERERS: Record<Aparencia, (s: any) => React.ReactNode> = {
+/**
+ * O par aparencia -> tipo de step e garantido pelo `aparencia()`, nao pelo
+ * compilador: e por isso que o cast mora AQUI, num lugar so e com nome, em vez
+ * de virar um `any` espalhado por cada renderer.
+ */
+const renderer =
+  <T extends Step>(fn: (s: T) => React.ReactNode) =>
+  (s: Step) =>
+    fn(s as T);
+
+/** A chamada e o mesmo `nome(argumentos)` esteja ela rodando ou ja fechada. */
+const assinatura = (s: StepDeChamada) => (
+  <code>
+    {s.nome}({json(s.argumentos)})
+  </code>
+);
+
+const RENDERERS: Record<Aparencia, (s: Step) => React.ReactNode> = {
   // A passada 1 nao escreve texto nenhum (os tokens dela sao os argumentos da
   // tool): esse step vazio E o spinner.
-  pensando: () => (
+  pensando: renderer(() => (
     <>
       <span className="spinner" />
       <span className="apagado">Pensando…</span>
     </>
-  ),
-  pensou: () => (
+  )),
+  pensou: renderer(() => (
     <span className="apagado">Pensei — esta passada não escreveu texto, só pediu a tool</span>
-  ),
-  streamando: (s: Extract<Step, { tipo: "texto" }>) => (
+  )),
+  streamando: renderer((s: StepDeTexto) => (
     <>
       {s.rascunho}
       <span className="cursor">▋</span>
     </>
-  ),
-  final: (s: Extract<Step, { tipo: "texto" }>) => <>{s.final}</>,
-  rodando: (s: Extract<Step, { tipo: "chamada_de_tool" }>) => (
+  )),
+  final: renderer((s: StepDeTexto) => <>{s.final}</>),
+  rodando: renderer((s: StepDeChamada) => (
     <>
-      <code>
-        {s.nome}({json(s.argumentos)})
-      </code>
+      {assinatura(s)}
       <div className="meta">esperando a tool responder…</div>
     </>
-  ),
-  chamada: (s: Extract<Step, { tipo: "chamada_de_tool" }>) => (
+  )),
+  chamada: renderer((s: StepDeChamada) => (
     <>
-      <code>
-        {s.nome}({json(s.argumentos)})
-      </code>
+      {assinatura(s)}
       <div className="meta">terminou em {(s.terminouEm ?? 0) - s.comecouEm} ms</div>
     </>
-  ),
-  resultado: (s: Extract<Step, { tipo: "resultado_de_tool" }>) => (
+  )),
+  resultado: renderer((s: StepDeResultado) => (
     <>
       <pre className="json">{json(s.dados ?? s.saida)}</pre>
       <div className="meta">latência: {s.latenciaMs} ms</div>
     </>
-  ),
-  erro: (s: Extract<Step, { tipo: "erro_de_tool" }>) => (
+  )),
+  erro: renderer((s: StepDeErro) => (
     <>
       <span style={{ color: "var(--erro)" }}>{s.erro}</span>
       <div className="meta">latência até falhar: {s.latenciaMs} ms</div>
     </>
-  ),
-  interrompido: (s: Step) => (
+  )),
+  interrompido: renderer((s: Step) => (
     <span className="apagado">
       interrompido — o fio fechou aqui
       {s.tipo === "texto" && s.rascunho ? `: “${s.rascunho}”` : ""}
     </span>
-  ),
+  )),
 };
 
 const ROTULOS: Record<Aparencia, string> = {

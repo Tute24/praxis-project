@@ -14,7 +14,14 @@ export function Chat() {
   const [estado, setEstado] = useState<Estado | null>(null);
   const [correndo, setCorrendo] = useState(false);
   const [aviso, setAviso] = useState<string | null>(null);
+  const [erroFatal, setErroFatal] = useState<Error | null>(null);
   const abortar = useRef<AbortController | null>(null);
+
+  // AC-06 manda LANCAR erro num tipo fora do contrato, e este e o jeito de
+  // lancar em React: relancar durante o RENDER, onde o erro sobe para o error
+  // boundary (e para o overlay do `next dev`) como um bug de verdade. Estourar
+  // dentro do laco `async` viraria unhandled rejection, que ninguem ve.
+  if (erroFatal) throw erroFatal;
 
   async function correr(mensagem: string) {
     abortar.current?.abort();
@@ -35,23 +42,18 @@ export function Chat() {
         atual = reduzir(atual, evento);
         setEstado(atual);
       }
-      // O fio fechou. Sem "stop" antes, a corrida nao completou: e stream
-      // morto -- conclusao do cliente pela ausencia do fim normal.
+      // O fio fechou; `fecharStream` decide se isso foi fim ou morte.
       setEstado(fecharStream(atual));
     } catch (erro) {
       setEstado(fecharStream(atual));
       if (controle.signal.aborted) return; // cancelamento do usuario nao e falha
       if (erro instanceof ApiIndisponivel) {
+        // O unico erro ESPERADO: a API fora do ar, antes do primeiro byte.
+        // Esse merece tarja; o resto, nao.
         setAviso(`${erro.message}. A API está no ar? (\`uv run uvicorn main:app\`)`);
         return;
       }
-      setAviso(erro instanceof Error ? erro.message : String(erro));
-      // O AC-06 manda LANCAR erro, nao engolir. Reerguer fora do loop deixa o
-      // erro chegar no `window.onerror` e no console, como um bug de verdade,
-      // em vez de virar so uma tarja bonitinha na tela.
-      queueMicrotask(() => {
-        throw erro;
-      });
+      setErroFatal(erro instanceof Error ? erro : new Error(String(erro)));
     } finally {
       setCorrendo(false);
     }
@@ -93,8 +95,8 @@ export function Chat() {
 
       {estado && progresso && (
         <>
-          {/* UMA barra para a corrida inteira, nao uma por step: o grafo e
-              sequencial, entao so existe uma coisa em andamento por vez. */}
+          {/* Uma barra so para a corrida inteira -- o porque esta em
+              `progressoDaCorrida`. */}
           <div
             className="faixa"
             role="progressbar"

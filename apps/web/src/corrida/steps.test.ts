@@ -122,4 +122,13 @@ describe("os caminhos que a fixture feliz nao tem", () => {
   it("o fio que fecha DEPOIS do 'stop' nao desfaz a corrida completa", () => {
     expect(tocarEFechar().status).toBe("completa");
   });
+
+  it("uma corrida completa nao pinta como interrompido a passada que ficou sem final", () => {
+    // So a MORTE congela um step. O "stop" chega no fim da ULTIMA passada, e
+    // uma passada anterior sem `final` nunca foi interrompida.
+    const completa = { ...tocar(), status: "completa" as const };
+    const semFinal = { ...completa.steps[0], final: null };
+
+    expect(aparencia(semFinal, completa.status)).toBe("pensando");
+  });
 });

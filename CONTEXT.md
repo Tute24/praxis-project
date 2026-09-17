@@ -62,6 +62,14 @@ _Avoid_: completo, resultado, output
 O tempo decorrido entre dois eventos, medido pelo cliente na chegada deles. É uma leitura do observador, não um dado que a API informa.
 _Avoid_: duração, tempo de execução
 
+**Aparência**:
+A cara que um step tem na tela, **derivada** dele mais o status da corrida — nunca guardada. Nenhum evento manda mostrar spinner; a aparência é o que traduz estado em pintura, e é por ela (não pelo tipo do step) que os renderers são indexados.
+_Avoid_: modo, variante, estado visual
+
+**Fase da corrida**:
+O que está em andamento agora, para a corrida inteira e não por step: o grafo é sequencial, então só existe uma. É o que a barra única mostra.
+_Avoid_: progresso, etapa, estágio
+
 ### Aprendizado
 
 **Fixture de eventos**:
