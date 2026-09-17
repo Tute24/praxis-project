@@ -40,6 +40,25 @@
   .step.erro_de_tool { border-left-color: var(--err); }
   .step.mudou { background: #fffbe8; }
   .rascunho { color: var(--muted); font-style: italic; }
+  .spinner-linha { display: flex; align-items: center; gap: 8px; }
+  .spinner {
+    width: 14px; height: 14px; border-radius: 50%; display: inline-block;
+    border: 2px solid var(--line); border-top-color: var(--accent);
+    animation: gira .8s linear infinite;
+  }
+  @keyframes gira { to { transform: rotate(360deg); } }
+  .check { color: var(--ok); font-weight: 700; }
+  .cursor { color: var(--accent); animation: pisca 1s steps(2) infinite; }
+  @keyframes pisca { 50% { opacity: 0; } }
+  .barra { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 8px 0 4px; }
+  .barra-fill {
+    height: 100%; background: #b45309; border-radius: 999px;
+    width: 8%; animation: cresce 2s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+  .barra-fill.cheia { width: 100%; background: var(--ok); animation: none; }
+  /* Para em 92%: o cliente NAO sabe quanto a tool ainda vai demorar; quem
+     completa a barra e a chegada do on_tool_end, nao o relogio. */
+  @keyframes cresce { to { width: 92%; } }
   .vazio { color: var(--muted); }
   .meta { color: var(--muted); font-size: 13px; }
   .status { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 13px; border: 1px solid var(--line); }
@@ -70,7 +89,7 @@
   o que interessa é você dizer "isso aí não deveria acontecer".
 </p>
 <p class="nota">
-  Descartável de propósito: sem backend, sem browser de verdade, sem estilo. O que vale
+  Descartável de propósito: sem backend, sem framework, sem refino visual. Os três feedbacks (spinner, barra, texto em chunks) estão aqui só para provar que o estado consegue sustentá-los. O que vale
   guardar é o módulo puro do topo do <code>&lt;script&gt;</code>; a página é casca.
 </p>
 
@@ -198,6 +217,7 @@ const TRANSICOES = {
     return ev.motivoDoFim === "stop" ? { ...comFinal, status: "completa" } : comFinal;
   },
 
+  // A chamada nasce ABERTA: `terminouEm: null` é o que mantém a barra crescendo.
   on_tool_start: (estado, ev) =>
     comStep(estado, {
       chave: ev.runId,
@@ -205,30 +225,38 @@ const TRANSICOES = {
       nome: ev.nome,
       argumentos: ev.argumentos,
       comecouEm: ev.chegadaEm,
+      terminouEm: null,
     }),
 
   // Resultado é um step SEPARADO da chamada: o AC-07 quer os dois visíveis.
   // A latência é leitura do cliente: chegada do fim menos chegada do começo.
   on_tool_end: (estado, ev) =>
-    comStep(estado, {
+    comStep(fecharChamada(estado, ev), {
       chave: ev.runId + ":fim",
       tipo: "resultado_de_tool",
       nome: ev.nome,
       saida: ev.saida,
-      latenciaMs: ev.chegadaEm - (acharStep(estado, ev.runId)?.comecouEm ?? ev.chegadaEm),
+      latenciaMs: latenciaDaTool(estado, ev),
     }),
 
   // on_tool_error passa pelo filtro `include_types=["chat_model","tool"]` e casa
   // com `on_tool_*`, então NÃO é evento desconhecido: tem dono, não `throw`.
   on_tool_error: (estado, ev) =>
-    comStep(estado, {
+    comStep(fecharChamada(estado, ev), {
       chave: ev.runId + ":fim",
       tipo: "erro_de_tool",
       nome: ev.nome,
       erro: ev.erro,
-      latenciaMs: ev.chegadaEm - (acharStep(estado, ev.runId)?.comecouEm ?? ev.chegadaEm),
+      latenciaMs: latenciaDaTool(estado, ev),
     }),
 };
+
+// Fim da tool fecha a chamada E cria o resultado: um evento, dois steps mexidos.
+const fecharChamada = (estado, ev) =>
+  trocarStep(estado, ev.runId, (s) => ({ ...s, terminouEm: ev.chegadaEm }));
+
+const latenciaDaTool = (estado, ev) =>
+  ev.chegadaEm - (acharStep(estado, ev.runId)?.comecouEm ?? ev.chegadaEm);
 
 function reduzir(estado, ev) {
   const transicao = TRANSICOES[ev.tipo];
@@ -243,8 +271,28 @@ const fecharStream = (estado) =>
 
 /* ---- Leituras derivadas (o que a UI real vai perguntar) ----------------- */
 
-// Uma passada que só pediu tool termina com final "" — não é texto para o usuário.
-const ehTextoVisivel = (s) => s.tipo !== "texto" || s.rascunho !== "" || (s.final ?? "") !== "";
+/* `aparencia` é a ponte entre o estado e o feedback visual do AC-07. Ela é
+   derivada, não guardada: nenhum evento diz "mostre o spinner". As três caras
+   que o Arthur pediu saem todas daqui —
+     pensando  -> spinner "Pensando" (a passada 1, que não produz texto nenhum)
+     rodando   -> barra crescendo (a chamada de tool ainda aberta)
+     streamando-> texto aparecendo token a token (a passada 2)
+   Um stream morto congela o que estava em movimento: vira `interrompido`.      */
+function aparencia(step, status) {
+  const emMovimento = status === "correndo";
+  if (step.tipo === "texto") {
+    if (step.final === null) {
+      const cara = step.rascunho === "" ? "pensando" : "streamando";
+      return emMovimento ? cara : "interrompido";
+    }
+    return step.final === "" ? "pensou" : "final"; // "" = passada que só pediu a tool
+  }
+  if (step.tipo === "chamada_de_tool") {
+    if (step.terminouEm === null) return emMovimento ? "rodando" : "interrompido";
+    return "chamada";
+  }
+  return step.tipo === "erro_de_tool" ? "erro" : "resultado";
+}
 
 /* =========================================================================
    CASCA DESCARTÁVEL — daqui para baixo é página, não é o modelo.
@@ -326,7 +374,7 @@ const ROTEIROS = [
   {
     nome: "Corrida completa",
     descricao:
-      "O caminho feliz inteiro, da fixture real. Repare que a corrida vira três coisas separadas na lista — chamada, resultado, texto — e que o status só vira 'completa' no último fim de passada, com finish_reason 'stop'.",
+      "O caminho feliz inteiro, da fixture real. Os três feedbacks em ordem: spinner nos passos 1-3, barra crescendo nos passos 4-5, texto aparecendo token a token nos passos 6-8. Repare que o status só vira 'completa' no último fim de passada, com finish_reason 'stop'.",
     passos: [
       ["Passada 1 começa", () => avancar(1)],
       ["Chegam os 10 tokens da passada 1", () => avancar(10)],
@@ -341,7 +389,7 @@ const ROTEIROS = [
   {
     nome: "O rascunho vazio da passada 1",
     descricao:
-      "A pergunta que o ticket levanta: numa corrida com tool há DUAS passadas do modelo — o 'end' da primeira substitui o rascunho de quem? Veja: os 10 tokens da passada 1 não trazem texto nenhum (o que chega ali são pedaços dos ARGUMENTOS da tool), e ela termina com final vazio e finish_reason 'tool_calls'. Um step de texto vazio não vira balão na tela.",
+      "A pergunta que o ticket levanta: numa corrida com tool há DUAS passadas do modelo — o 'end' da primeira substitui o rascunho de quem? Veja: os 10 tokens da passada 1 não trazem texto nenhum (o que chega ali são pedaços dos ARGUMENTOS da tool), e ela termina com final vazio e finish_reason 'tool_calls'. Esse step vazio é justamente o que vira o spinner “Pensando”: ele existe no estado do primeiro evento ao último token, mesmo sem nunca ter texto.",
     passos: [
       ["Passada 1 começa", () => avancar(1)],
       ["Um token — repare no rascunho", () => avancar(1)],
@@ -389,6 +437,8 @@ const DECISOES = [
   ["on_tool_error é step, não throw", "Ele casa com on_tool_* e passa pelo filtro do back, então é contrato. Aqui ele é um TIPO próprio de step (e não um campo no resultado) porque o que se pinta é outra coisa."],
   ["Latência é leitura do cliente", "Calculada na chegada dos eventos, dentro do reducer, a partir do comecouEm do step da tool. O AC-06 proíbe evento custom, então não há alternativa no servidor."],
   ["Stream morto não é evento", "fecharStream() é uma função à parte: quem sabe que o fio fechou é o transporte, e 'morta' é a conclusão pela ausência de 'stop'."],
+  ["O feedback visual é DERIVADO, não guardado", "aparencia(step, status) traduz o estado nas três caras pedidas: spinner 'Pensando' na passada 1, barra crescendo enquanto a chamada de tool está aberta, texto aparecendo token a token na passada 2. Nenhum evento diz 'mostre o spinner' — se a aparência fosse um campo no estado, o reducer precisaria conhecer a tela."],
+  ["A barra para em 92%", "O cliente não sabe quanto a tool vai demorar (a API não manda progresso e o AC-06 proíbe evento custom). Então a barra cresce sozinha e só é completada pela chegada do on_tool_end — barra determinística seria mentira."],
 ];
 
 /* ---- Render ------------------------------------------------------------- */
@@ -396,33 +446,47 @@ const DECISOES = [
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 
+// Cada aparência tem UM renderer, na mesma ideia de registry do AC-06: uma
+// aparência nova é uma chave nova aqui, não um `if` a mais.
+const RENDERERS = {
+  pensando: () => `<div class="spinner-linha"><span class="spinner"></span><span class="rascunho">Pensando…</span></div>`,
+  pensou: () => `<div class="spinner-linha"><span class="check">✓</span><span class="vazio">Pensei — esta passada não escreveu texto, só pediu a tool</span></div>`,
+  streamando: (s) => `<span>${esc(s.rascunho)}</span><span class="cursor">▋</span>`,
+  final: (s) => `<b>${esc(s.final)}</b>`,
+  rodando: (s) => `
+    <code>${esc(s.nome)}(${esc(JSON.stringify(s.argumentos))})</code>
+    <div class="barra"><div class="barra-fill"></div></div>
+    <div class="meta">chamando a tool…</div>`,
+  chamada: (s) => `<code>${esc(s.nome)}(${esc(JSON.stringify(s.argumentos))})</code>
+    <div class="barra"><div class="barra-fill cheia"></div></div>
+    <div class="meta">terminou em ${s.terminouEm - s.comecouEm} ms</div>`,
+  resultado: (s) => `<code>${esc(s.saida)}</code><div class="meta">latência: ${s.latenciaMs} ms</div>`,
+  erro: (s) => `<span style="color:var(--err)">${esc(s.erro)}</span><div class="meta">latência até falhar: ${s.latenciaMs} ms</div>`,
+  interrompido: (s) =>
+    `<div class="spinner-linha"><span class="check" style="color:var(--err)">✕</span><span class="vazio">interrompido — o fio fechou aqui${s.rascunho ? ": “" + esc(s.rascunho) + "”" : ""}</span></div>`,
+};
+
+const CABECA = {
+  pensando: "modelo pensando", pensou: "modelo pensou", streamando: "texto do modelo · chegando",
+  final: "texto do modelo · final", rodando: "chamada de tool · rodando", chamada: "chamada de tool",
+  resultado: "resultado da tool", erro: "erro da tool", interrompido: "stream morto",
+};
+
 function renderStep(s) {
   const novo = !chavesAntes.has(JSON.stringify(s));
-  const cabeca = { texto: "texto do modelo", chamada_de_tool: "chamada de tool", resultado_de_tool: "resultado da tool", erro_de_tool: "erro da tool" }[s.tipo];
-  let corpo = "";
-  if (s.tipo === "texto") {
-    if (s.final !== null) corpo = s.final === "" ? `<span class="vazio">final vazio — esta passada só pediu a tool</span>` : `<b>${esc(s.final)}</b>`;
-    else corpo = s.rascunho === "" ? `<span class="rascunho">rascunho vazio…</span>` : `<span class="rascunho">${esc(s.rascunho)}</span>`;
-  } else if (s.tipo === "chamada_de_tool") {
-    corpo = `<code>${esc(s.nome)}(${esc(JSON.stringify(s.argumentos))})</code>`;
-  } else if (s.tipo === "resultado_de_tool") {
-    corpo = `<code>${esc(s.saida)}</code><div class="meta">latência: ${s.latenciaMs} ms</div>`;
-  } else {
-    corpo = `<span style="color:var(--err)">${esc(s.erro)}</span><div class="meta">latência até falhar: ${s.latenciaMs} ms</div>`;
-  }
-  const rotuloEstado = s.tipo === "texto" ? (s.final !== null ? " · final" : " · rascunho") : "";
-  return `<div class="step ${s.tipo}${novo ? " mudou" : ""}"><div class="tipo">${cabeca}${rotuloEstado}</div>${corpo}</div>`;
+  const cara = aparencia(s, estado.status);
+  return `<div class="step ${s.tipo}${novo ? " mudou" : ""}"><div class="tipo">${CABECA[cara]}</div>${RENDERERS[cara](s)}</div>`;
 }
 
 function render() {
   const lidos = cursor;
-  const visiveis = estado.steps.filter(ehTextoVisivel);
+  const caras = estado.steps.map((s) => aparencia(s, estado.status));
   $("estado").innerHTML = `
     <div class="meta">pergunta: <b>${esc(estado.mensagem)}</b></div>
     <div class="meta">eventos lidos do fio: ${lidos} de ${FIXTURE.events.length} · relógio simulado: ${relogio} ms ·
       status: <span class="status ${estado.status}">${estado.status}</span></div>
     <div style="margin-top:14px">${estado.steps.map(renderStep).join("") || '<span class="vazio">nenhum step ainda</span>'}</div>
-    <div class="meta" style="margin-top:10px">${estado.steps.length} steps no estado · ${visiveis.length} apareceriam na tela</div>`;
+    <div class="meta" style="margin-top:10px">${estado.steps.length} steps no estado · aparências: ${caras.join(", ") || "—"}</div>`;
 
   $("erro-area").innerHTML = ultimoErro
     ? `<div class="erro"><b>O reducer recusou o evento:</b> ${esc(ultimoErro)}<div class="meta">No front real isso estoura de propósito (AC-06); esta página só captura para você ler.</div></div>`
