@@ -12,9 +12,11 @@ from langchain_core.tools import tool
 @tool
 async def get_weather(city: str) -> dict:
     """Consulta o clima atual de uma cidade."""
-    # `async def` + `asyncio.sleep`: os 2s do enunciado simulam I/O, e I/O
-    # simulado nao pode bloquear o event loop (restricao transversal do mapa).
-    await asyncio.sleep(2)
+    # `async def` + `asyncio.sleep`: a espera simula I/O, e I/O simulado nao
+    # pode bloquear o event loop (restricao transversal do mapa). O enunciado
+    # pede 2s; subimos para 5s a pedido do Arthur, para o feedback de tool
+    # rodando (AC-07) dar tempo de ser visto na tela (issue #6).
+    await asyncio.sleep(5)
     return {"city": city, "temp_c": 22, "condition": "parcialmente nublado"}
 
 
