@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Protótipo: modelo de estado do front (AC-06 / AC-07)</title>
+<style>
+  :root {
+    --fg: #14161a; --muted: #6b7280; --line: #e5e7eb; --bg: #fbfbfc;
+    --accent: #2f5fd8; --ok: #0f7b4f; --err: #b3261e; --card: #fff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 24px 80px; background: var(--bg); color: var(--fg);
+    font: 15px/1.55 ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  }
+  main { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 36px 0 12px; }
+  p { margin: 0 0 12px; }
+  .lead { color: var(--muted); max-width: 72ch; }
+  code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: .92em; background: #f1f2f4; padding: 1px 5px; border-radius: 4px; }
+  .painel { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+  .linha { display: flex; gap: 10px; flex-wrap: wrap; }
+  button {
+    font: inherit; padding: 7px 13px; border-radius: 6px; border: 1px solid var(--line);
+    background: #fff; cursor: pointer; color: var(--fg);
+  }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  button[disabled] { opacity: .4; cursor: default; border-color: var(--line); color: var(--muted); }
+  button.principal { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.principal:hover { opacity: .9; color: #fff; }
+  button.feito { background: #eef2fb; color: var(--muted); border-style: dashed; }
+  .abas { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .abas button[aria-selected="true"] { background: var(--fg); color: #fff; border-color: var(--fg); }
+  .step { border: 1px solid var(--line); border-left-width: 3px; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; background: #fff; }
+  .step .tipo { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+  .step.texto { border-left-color: var(--accent); }
+  .step.chamada_de_tool { border-left-color: #b45309; }
+  .step.resultado_de_tool { border-left-color: var(--ok); }
+  .step.erro_de_tool { border-left-color: var(--err); }
+  .step.mudou { background: #fffbe8; }
+  .rascunho { color: var(--muted); font-style: italic; }
+  .vazio { color: var(--muted); }
+  .meta { color: var(--muted); font-size: 13px; }
+  .status { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 13px; border: 1px solid var(--line); }
+  .status.correndo { background: #eef2fb; color: var(--accent); }
+  .status.completa { background: #e9f6f0; color: var(--ok); }
+  .status.morta { background: #fdecea; color: var(--err); }
+  .erro { border: 1px solid var(--err); background: #fdecea; color: var(--err); border-radius: 6px; padding: 10px 12px; margin-top: 12px; }
+  .nota { border-left: 3px solid var(--line); padding-left: 12px; color: var(--muted); }
+  ol.passos { list-style: none; padding: 0; margin: 12px 0 0; }
+  ol.passos li { margin-bottom: 6px; }
+  .decisao { margin-bottom: 14px; }
+  .decisao b { display: block; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Como o front guarda uma corrida do agente</h1>
+<p class="lead">
+  Este demo existe para responder uma pergunta só: <b>qual o formato do estado do cliente
+  que representa uma corrida do agente como <i>estados separados</i></b> — chamada de tool,
+  resultado da tool e texto final — em vez de uma string que cresce na tela (AC-07), e que
+  <b>lança erro em evento fora do contrato</b> (AC-06). A proposta implementada aqui é: a corrida é
+  uma <b>lista de steps tipados</b>, e cada evento que chega é aplicado por uma <b>função pura</b>
+  <code>reduzir(estado, evento)</code>. Os eventos são os reais, gravados na fixture da corrida
+  "Qual o clima em São Paulo?" — nada aqui inventa dado. Clique e veja se a forma parece certa;
+  o que interessa é você dizer "isso aí não deveria acontecer".
+</p>
+<p class="nota">
+  Descartável de propósito: sem backend, sem browser de verdade, sem estilo. O que vale
+  guardar é o módulo puro do topo do <code>&lt;script&gt;</code>; a página é casca.
+</p>
+
+<h2>Estado atual</h2>
+<div class="painel" id="estado"></div>
+<div id="erro-area"></div>
+
+<h2>Roteiros guiados</h2>
+<p class="lead">Cada aba arma um caso difícil de julgar no papel. Começar um roteiro zera o estado.</p>
+<div class="abas" id="abas"></div>
+<div class="painel">
+  <p id="roteiro-descricao" class="lead"></p>
+  <ol class="passos" id="roteiro-passos"></ol>
+</div>
+
+<h2>Jogo livre</h2>
+<p class="lead">Qualquer botão, em qualquer ordem, a qualquer hora.</p>
+<div class="painel linha" id="livre"></div>
+
+<hr />
+<h2>As decisões que este protótipo toma</h2>
+<div id="decisoes"></div>
+
+</main>
+
+<script>
+/* =========================================================================
+   MÓDULO PURO  —  a parte que sobrevive ao protótipo.
+   Nada aqui toca DOM, timer ou fetch. Entra evento, sai estado.
+   ========================================================================= */
+
+/* ---- Borda do transporte: desembrulha o envelope LC ---------------------
+   O AC-05 manda serializar o StreamEvent INTEIRO, e o `dumpd` embrulha
+   `data.chunk` / `data.output` em {"lc":1,"type":"constructor","kwargs":{...}}.
+   A decisão aqui: esse desembrulho acontece NA BORDA (junto do parser SSE), e o
+   reducer nunca vê envelope. Assim o teste do AC-07 alimenta o reducer com dado
+   plano e continua legível.                                                  */
+
+const desembrulharLC = (v) => (v && v.lc === 1 ? v.kwargs || {} : v || {});
+
+function desembrulhar(frame, chegadaEm) {
+  const evento = frame.data;          // o StreamEvent inteiro, as 7 chaves
+  const carga = evento.data || {};
+  const base = { tipo: evento.event, nome: evento.name, runId: evento.run_id, chegadaEm };
+
+  switch (evento.event) {
+    case "on_chat_model_start":
+      return base;
+    case "on_chat_model_stream": {
+      const chunk = desembrulharLC(carga.chunk);
+      return { ...base, texto: typeof chunk.content === "string" ? chunk.content : "" };
+    }
+    case "on_chat_model_end": {
+      const saida = desembrulharLC(carga.output);
+      return {
+        ...base,
+        texto: typeof saida.content === "string" ? saida.content : "",
+        motivoDoFim: (saida.response_metadata || {}).finish_reason || null,
+        chamadasDeTool: saida.tool_calls || [],
+      };
+    }
+    case "on_tool_start":
+      return { ...base, argumentos: carga.input || {} };
+    case "on_tool_end":
+      return { ...base, saida: desembrulharLC(carga.output).content ?? null };
+    case "on_tool_error":
+      return { ...base, erro: String(carga.error ?? "erro desconhecido") };
+    default:
+      return base;   // tipo fora do contrato passa cru: quem recusa é o reducer (AC-06)
+  }
+}
+
+/* ---- Estado ------------------------------------------------------------- */
+
+const estadoInicial = (mensagem) => ({
+  mensagem,
+  steps: [],          // lista ORDENADA de steps tipados — é isso que faz o AC-07
+  status: "correndo", // correndo | completa | morta
+});
+
+/* ---- Helpers puros sobre a lista de steps ------------------------------- */
+
+const acharStep = (estado, chave) => estado.steps.find((s) => s.chave === chave);
+
+const comStep = (estado, step) => ({ ...estado, steps: [...estado.steps, step] });
+
+const trocarStep = (estado, chave, fn) => ({
+  ...estado,
+  steps: estado.steps.map((s) => (s.chave === chave ? fn(s) : s)),
+});
+
+/* ---- Registry de transições: um evento, um dono ------------------------
+   AC-06 pede dispatch por tipo com erro no desconhecido. Registry aberto para
+   extensão: um evento novo é uma CHAVE NOVA aqui, nenhum `if` editado.        */
+
+const TRANSICOES = {
+  // Uma passada do modelo começa: nasce um step de texto com a chave do run_id.
+  on_chat_model_start: (estado, ev) =>
+    comStep(estado, {
+      chave: ev.runId,
+      tipo: "texto",
+      rascunho: "",
+      final: null,
+      comecouEm: ev.chegadaEm,
+      primeiroTokenEm: null,
+    }),
+
+  // Token: concatena NO RASCUNHO do step daquela passada.
+  on_chat_model_stream: (estado, ev) =>
+    trocarStep(estado, ev.runId, (s) => ({
+      ...s,
+      rascunho: s.rascunho + ev.texto,
+      primeiroTokenEm: s.primeiroTokenEm ?? (ev.texto ? ev.chegadaEm : null),
+    })),
+
+  // Fim da passada: o final SUBSTITUI o rascunho — e só o da SUA passada.
+  // Corrida completa é o fim com finish_reason "stop" (CONTEXT.md).
+  on_chat_model_end: (estado, ev) => {
+    const comFinal = trocarStep(estado, ev.runId, (s) => ({
+      ...s,
+      rascunho: "",
+      final: ev.texto,
+      terminouEm: ev.chegadaEm,
+    }));
+    return ev.motivoDoFim === "stop" ? { ...comFinal, status: "completa" } : comFinal;
+  },
+
+  on_tool_start: (estado, ev) =>
+    comStep(estado, {
+      chave: ev.runId,
+      tipo: "chamada_de_tool",
+      nome: ev.nome,
+      argumentos: ev.argumentos,
+      comecouEm: ev.chegadaEm,
+    }),
+
+  // Resultado é um step SEPARADO da chamada: o AC-07 quer os dois visíveis.
+  // A latência é leitura do cliente: chegada do fim menos chegada do começo.
+  on_tool_end: (estado, ev) =>
+    comStep(estado, {
+      chave: ev.runId + ":fim",
+      tipo: "resultado_de_tool",
+      nome: ev.nome,
+      saida: ev.saida,
+      latenciaMs: ev.chegadaEm - (acharStep(estado, ev.runId)?.comecouEm ?? ev.chegadaEm),
+    }),
+
+  // on_tool_error passa pelo filtro `include_types=["chat_model","tool"]` e casa
+  // com `on_tool_*`, então NÃO é evento desconhecido: tem dono, não `throw`.
+  on_tool_error: (estado, ev) =>
+    comStep(estado, {
+      chave: ev.runId + ":fim",
+      tipo: "erro_de_tool",
+      nome: ev.nome,
+      erro: ev.erro,
+      latenciaMs: ev.chegadaEm - (acharStep(estado, ev.runId)?.comecouEm ?? ev.chegadaEm),
+    }),
+};
+
+function reduzir(estado, ev) {
+  const transicao = TRANSICOES[ev.tipo];
+  if (!transicao) throw new Error(`Evento fora do contrato: ${ev.tipo}`); // AC-06
+  return transicao(estado, ev);
+}
+
+// O fio fechou. Sem "stop", a corrida não completou: é stream morto — conclusão
+// do cliente pela AUSÊNCIA do fim normal, não um evento que a API mandou.
+const fecharStream = (estado) =>
+  estado.status === "completa" ? estado : { ...estado, status: "morta" };
+
+/* ---- Leituras derivadas (o que a UI real vai perguntar) ----------------- */
+
+// Uma passada que só pediu tool termina com final "" — não é texto para o usuário.
+const ehTextoVisivel = (s) => s.tipo !== "texto" || s.rascunho !== "" || (s.final ?? "") !== "";
+
+/* =========================================================================
+   CASCA DESCARTÁVEL — daqui para baixo é página, não é o modelo.
+   ========================================================================= */
+
+const FIXTURE = __FIXTURE__;
+
+// A fixture não gravou horário de chegada (ela é só {event, data}), então o
+// demo simula um relógio: 2s na tool, como o stub do enunciado, e ~40ms por token.
+const PASSO_DO_RELOGIO = {
+  on_chat_model_start: 120,
+  on_chat_model_stream: 40,
+  on_chat_model_end: 80,
+  on_tool_start: 5,
+  on_tool_end: 2000,
+  on_tool_error: 2000,
+};
+
+let estado = estadoInicial(FIXTURE.message);
+let cursor = 0;      // próximo frame da fixture
+let relogio = 0;
+let ultimoErro = null;
+let chavesAntes = new Set();
+
+function avancarRelogio(tipo) {
+  relogio += PASSO_DO_RELOGIO[tipo] ?? 50;
+  return relogio;
+}
+
+function aplicarFrame(frame) {
+  const ev = desembrulhar(frame, avancarRelogio(frame.event));
+  aplicar(() => reduzir(estado, ev));
+}
+
+function aplicar(fn) {
+  chavesAntes = new Set(estado.steps.map((s) => JSON.stringify(s)));
+  try {
+    estado = fn();
+    ultimoErro = null;
+  } catch (e) {
+    ultimoErro = e.message;   // o front real deixaria estourar; aqui mostramos
+  }
+  render();
+}
+
+function proximoEvento() {
+  if (cursor >= FIXTURE.events.length) return;
+  aplicarFrame(FIXTURE.events[cursor++]);
+}
+
+function reiniciar(mensagem = FIXTURE.message) {
+  estado = estadoInicial(mensagem);
+  cursor = 0;
+  relogio = 0;
+  ultimoErro = null;
+  render();
+}
+
+// Eventos sintéticos: casos que a fixture feliz não tem.
+const frameSintetico = (event, name, runId, data) => ({ event, data: { event, name, run_id: runId, data } });
+
+const runIdDaTool = () => (FIXTURE.events.find((f) => f.event === "on_tool_start") || {}).data.run_id;
+
+const ACOES_LIVRES = [
+  { rotulo: "Próximo evento da corrida", principal: true, fn: proximoEvento },
+  {
+    rotulo: "A tool falha (on_tool_error)",
+    fn: () => aplicarFrame(frameSintetico("on_tool_error", "get_weather", runIdDaTool(), { error: "TimeoutError: serviço de clima não respondeu" })),
+  },
+  {
+    rotulo: "Chega um evento fora do contrato",
+    fn: () => aplicarFrame(frameSintetico("on_retriever_start", "VectorStore", "run-desconhecido", {})),
+  },
+  { rotulo: "O fio fecha agora", fn: () => aplicar(() => fecharStream(estado)) },
+  { rotulo: "Zerar", fn: () => reiniciar() },
+];
+
+const ROTEIROS = [
+  {
+    nome: "Corrida completa",
+    descricao:
+      "O caminho feliz inteiro, da fixture real. Repare que a corrida vira três coisas separadas na lista — chamada, resultado, texto — e que o status só vira 'completa' no último fim de passada, com finish_reason 'stop'.",
+    passos: [
+      ["Passada 1 começa", () => avancar(1)],
+      ["Chegam os 10 tokens da passada 1", () => avancar(10)],
+      ["Passada 1 termina", () => avancar(1)],
+      ["A tool começa", () => avancar(1)],
+      ["A tool termina (2s depois)", () => avancar(1)],
+      ["Passada 2 começa", () => avancar(1)],
+      ["Chegam os 22 tokens do texto", () => avancar(22)],
+      ["Passada 2 termina com 'stop'", () => avancar(1)],
+    ],
+  },
+  {
+    nome: "O rascunho vazio da passada 1",
+    descricao:
+      "A pergunta que o ticket levanta: numa corrida com tool há DUAS passadas do modelo — o 'end' da primeira substitui o rascunho de quem? Veja: os 10 tokens da passada 1 não trazem texto nenhum (o que chega ali são pedaços dos ARGUMENTOS da tool), e ela termina com final vazio e finish_reason 'tool_calls'. Um step de texto vazio não vira balão na tela.",
+    passos: [
+      ["Passada 1 começa", () => avancar(1)],
+      ["Um token — repare no rascunho", () => avancar(1)],
+      ["Mais 9 tokens", () => avancar(9)],
+      ["Passada 1 termina ('tool_calls')", () => avancar(1)],
+    ],
+  },
+  {
+    nome: "A tool falha",
+    descricao:
+      "on_tool_error passa pelo filtro do back e casa com o prefixo on_tool_*, então NÃO é evento fora do contrato: ele tem um step próprio, com a mesma latência do resultado. Depois o fio fecha sem 'stop' — a corrida fica morta, não completa.",
+    passos: [
+      ["Corrida até a tool começar", () => avancar(13)],
+      ["A tool estoura", () => aplicarFrame(frameSintetico("on_tool_error", "get_weather", runIdDaTool(), { error: "TimeoutError: serviço de clima não respondeu" }))],
+      ["O fio fecha", () => aplicar(() => fecharStream(estado))],
+    ],
+  },
+  {
+    nome: "Stream morto no meio",
+    descricao:
+      "O fio cai no meio da segunda passada. A API não anuncia a morte (ela não pode inventar um 'event: error'), então o cliente conclui pela ausência do fim normal: o rascunho parou onde parou e o status vira 'morta'.",
+    passos: [
+      ["Corrida até metade do texto final", () => avancar(25)],
+      ["O fio cai", () => aplicar(() => fecharStream(estado))],
+    ],
+  },
+  {
+    nome: "Evento fora do contrato",
+    descricao:
+      "AC-06: qualquer tipo que não seja on_chat_model_* ou on_tool_* é erro, não é 'ignora e segue'. O reducer lança; aqui a casca captura só para você ver a mensagem.",
+    passos: [
+      ["Começa a corrida", () => avancar(3)],
+      ["Chega on_retriever_start", () => aplicarFrame(frameSintetico("on_retriever_start", "VectorStore", "run-desconhecido", {}))],
+    ],
+  },
+];
+
+function avancar(n) { for (let i = 0; i < n && cursor < FIXTURE.events.length; i++) proximoEvento(); }
+
+const DECISOES = [
+  ["Lista de steps tipados, não uma string", "Uma string que cresce não consegue representar 'estados separados'. A corrida é uma lista ordenada de steps com tipo próprio: texto, chamada_de_tool, resultado_de_tool, erro_de_tool."],
+  ["A chave do step é o run_id", "Cada passada do modelo tem run_id próprio na fixture, e a tool também. É isso que responde 'o end substitui o rascunho de quem': o da SUA passada, nunca o da outra."],
+  ["Chamada e resultado são steps separados", "Dois steps, não um que muta, porque o AC-07 quer os dois visíveis ao mesmo tempo, e porque o que os liga (o run_id) já existe."],
+  ["Desembrulho do envelope LC fica na borda", "O parser SSE devolve evento plano; o reducer não conhece o formato do LangChain. Sem isso, todo teste do AC-07 carrega {lc:1,...} junto."],
+  ["on_tool_error é step, não throw", "Ele casa com on_tool_* e passa pelo filtro do back, então é contrato. Aqui ele é um TIPO próprio de step (e não um campo no resultado) porque o que se pinta é outra coisa."],
+  ["Latência é leitura do cliente", "Calculada na chegada dos eventos, dentro do reducer, a partir do comecouEm do step da tool. O AC-06 proíbe evento custom, então não há alternativa no servidor."],
+  ["Stream morto não é evento", "fecharStream() é uma função à parte: quem sabe que o fio fechou é o transporte, e 'morta' é a conclusão pela ausência de 'stop'."],
+];
+
+/* ---- Render ------------------------------------------------------------- */
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+function renderStep(s) {
+  const novo = !chavesAntes.has(JSON.stringify(s));
+  const cabeca = { texto: "texto do modelo", chamada_de_tool: "chamada de tool", resultado_de_tool: "resultado da tool", erro_de_tool: "erro da tool" }[s.tipo];
+  let corpo = "";
+  if (s.tipo === "texto") {
+    if (s.final !== null) corpo = s.final === "" ? `<span class="vazio">final vazio — esta passada só pediu a tool</span>` : `<b>${esc(s.final)}</b>`;
+    else corpo = s.rascunho === "" ? `<span class="rascunho">rascunho vazio…</span>` : `<span class="rascunho">${esc(s.rascunho)}</span>`;
+  } else if (s.tipo === "chamada_de_tool") {
+    corpo = `<code>${esc(s.nome)}(${esc(JSON.stringify(s.argumentos))})</code>`;
+  } else if (s.tipo === "resultado_de_tool") {
+    corpo = `<code>${esc(s.saida)}</code><div class="meta">latência: ${s.latenciaMs} ms</div>`;
+  } else {
+    corpo = `<span style="color:var(--err)">${esc(s.erro)}</span><div class="meta">latência até falhar: ${s.latenciaMs} ms</div>`;
+  }
+  const rotuloEstado = s.tipo === "texto" ? (s.final !== null ? " · final" : " · rascunho") : "";
+  return `<div class="step ${s.tipo}${novo ? " mudou" : ""}"><div class="tipo">${cabeca}${rotuloEstado}</div>${corpo}</div>`;
+}
+
+function render() {
+  const lidos = cursor;
+  const visiveis = estado.steps.filter(ehTextoVisivel);
+  $("estado").innerHTML = `
+    <div class="meta">pergunta: <b>${esc(estado.mensagem)}</b></div>
+    <div class="meta">eventos lidos do fio: ${lidos} de ${FIXTURE.events.length} · relógio simulado: ${relogio} ms ·
+      status: <span class="status ${estado.status}">${estado.status}</span></div>
+    <div style="margin-top:14px">${estado.steps.map(renderStep).join("") || '<span class="vazio">nenhum step ainda</span>'}</div>
+    <div class="meta" style="margin-top:10px">${estado.steps.length} steps no estado · ${visiveis.length} apareceriam na tela</div>`;
+
+  $("erro-area").innerHTML = ultimoErro
+    ? `<div class="erro"><b>O reducer recusou o evento:</b> ${esc(ultimoErro)}<div class="meta">No front real isso estoura de propósito (AC-06); esta página só captura para você ler.</div></div>`
+    : "";
+
+  $("livre").innerHTML = "";
+  ACOES_LIVRES.forEach((a) => {
+    const b = document.createElement("button");
+    b.textContent = a.rotulo;
+    if (a.principal) b.className = "principal";
+    b.onclick = a.fn;
+    $("livre").appendChild(b);
+  });
+}
+
+let roteiroAtivo = 0, passoAtivo = 0;
+
+function renderRoteiro() {
+  $("abas").innerHTML = "";
+  ROTEIROS.forEach((r, i) => {
+    const b = document.createElement("button");
+    b.textContent = r.nome;
+    b.setAttribute("aria-selected", String(i === roteiroAtivo));
+    b.onclick = () => { roteiroAtivo = i; passoAtivo = 0; reiniciar(); renderRoteiro(); };
+    $("abas").appendChild(b);
+  });
+  const r = ROTEIROS[roteiroAtivo];
+  $("roteiro-descricao").textContent = r.descricao;
+  $("roteiro-passos").innerHTML = "";
+  r.passos.forEach(([rotulo, fn], i) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.textContent = `${i + 1}. ${rotulo}`;
+    if (i < passoAtivo) b.className = "feito";
+    else if (i === passoAtivo) b.className = "principal";
+    else b.disabled = true;
+    b.onclick = () => { fn(); passoAtivo = i + 1; renderRoteiro(); };
+    li.appendChild(b);
+    $("roteiro-passos").appendChild(li);
+  });
+}
+
+$("decisoes").innerHTML = DECISOES.map(([t, d]) => `<div class="decisao"><b>${esc(t)}</b><span class="lead">${esc(d)}</span></div>`).join("");
+
+reiniciar();
+renderRoteiro();
+</script>
+</body>
+</html>
