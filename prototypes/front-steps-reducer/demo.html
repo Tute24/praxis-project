@@ -50,15 +50,19 @@
   .check { color: var(--ok); font-weight: 700; }
   .cursor { color: var(--accent); animation: pisca 1s steps(2) infinite; }
   @keyframes pisca { 50% { opacity: 0; } }
-  .barra { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 8px 0 4px; }
-  .barra-fill {
-    height: 100%; background: #b45309; border-radius: 999px;
-    width: 8%; animation: cresce 2s cubic-bezier(.2,.8,.3,1) forwards;
-  }
-  .barra-fill.cheia { width: 100%; background: var(--ok); animation: none; }
-  /* Para em 92%: o cliente NAO sabe quanto a tool ainda vai demorar; quem
-     completa a barra e a chegada do on_tool_end, nao o relogio. */
-  @keyframes cresce { to { width: 92%; } }
+  /* UMA barra para a corrida inteira, no painel de estado. Na fase da tool ela
+     cresce sozinha e PARA em 88%: o cliente nao sabe quanto a tool vai demorar
+     (a API nao manda progresso), entao quem completa e a chegada do evento. */
+  .faixa { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 10px 0 6px; }
+  .faixa-fill { height: 100%; border-radius: 999px; background: var(--accent); width: 6%; transition: width .35s ease; }
+  .faixa-fill.pensando { width: 15%; }
+  .faixa-fill.tool { background: #b45309; animation: cresce 5s cubic-bezier(.2,.8,.3,1) forwards; }
+  .faixa-fill.texto { width: 88%; }
+  .faixa-fill.completa { width: 100%; background: var(--ok); }
+  .faixa-fill.morta { width: 100%; background: var(--err); }
+  @keyframes cresce { from { width: 20%; } to { width: 88%; } }
+  pre.json { margin: 6px 0 0; padding: 10px 12px; background: #f6f7f9; border-radius: 6px; overflow-x: auto; font-size: 13px; }
+  .dados { border: 1px solid var(--ok); border-radius: 6px; padding: 10px 12px; margin-top: 10px; background: #f4fbf7; }
   .vazio { color: var(--muted); }
   .meta { color: var(--muted); font-size: 13px; }
   .status { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 13px; border: 1px solid var(--line); }
@@ -153,8 +157,15 @@ function desembrulhar(frame, chegadaEm) {
     }
     case "on_tool_start":
       return { ...base, argumentos: carga.input || {} };
-    case "on_tool_end":
-      return { ...base, saida: desembrulharLC(carga.output).content ?? null };
+    case "on_tool_end": {
+      // O ToolMessage carrega o retorno da tool como STRING de JSON. O parse
+      // acontece aqui, na borda, pelo mesmo motivo do envelope LC: o reducer
+      // guarda dado pronto, e o teste do AC-07 nao carrega JSON.parse junto.
+      const bruta = desembrulharLC(carga.output).content ?? null;
+      let dados = null;
+      try { dados = typeof bruta === "string" ? JSON.parse(bruta) : bruta; } catch { dados = null; }
+      return { ...base, saida: bruta, dados };
+    }
     case "on_tool_error":
       return { ...base, erro: String(carga.error ?? "erro desconhecido") };
     default:
@@ -217,7 +228,8 @@ const TRANSICOES = {
     return ev.motivoDoFim === "stop" ? { ...comFinal, status: "completa" } : comFinal;
   },
 
-  // A chamada nasce ABERTA: `terminouEm: null` é o que mantém a barra crescendo.
+  // A chamada nasce ABERTA: `terminouEm: null` e o que diz que a corrida esta
+  // esperando a tool -- e o que a barra unica le para saber a fase.
   on_tool_start: (estado, ev) =>
     comStep(estado, {
       chave: ev.runId,
@@ -235,7 +247,8 @@ const TRANSICOES = {
       chave: ev.runId + ":fim",
       tipo: "resultado_de_tool",
       nome: ev.nome,
-      saida: ev.saida,
+      saida: ev.saida,      // a string crua, exatamente como veio no fio
+      dados: ev.dados,      // o mesmo JSON ja desembrulhado, para a tela
       latenciaMs: latenciaDaTool(estado, ev),
     }),
 
@@ -294,6 +307,26 @@ function aparencia(step, status) {
   return step.tipo === "erro_de_tool" ? "erro" : "resultado";
 }
 
+/* UMA barra para a corrida inteira, não uma por step: o que está em andamento
+   é sempre uma coisa só (o grafo é sequencial). A fase sai do último step mais
+   o status — de novo, derivada.                                               */
+function progressoDaCorrida(estado) {
+  if (estado.status === "completa") return { fase: "completa", rotulo: "Corrida completa" };
+  if (estado.status === "morta") return { fase: "morta", rotulo: "Stream morto — o fio fechou sem o fim normal" };
+  const ultimo = estado.steps[estado.steps.length - 1];
+  if (!ultimo) return { fase: "esperando", rotulo: "Esperando o primeiro evento" };
+  const cara = aparencia(ultimo, estado.status);
+  if (cara === "rodando") return { fase: "tool", rotulo: `Consultando ${ultimo.nome}…` };
+  if (cara === "streamando") return { fase: "texto", rotulo: "Escrevendo a resposta…" };
+  return { fase: "pensando", rotulo: "Pensando…" };
+}
+
+// O JSON que a tool devolveu, para reaparecer no fim do streaming junto da
+// resposta. O step guarda a string crua (é o que veio no fio) e o objeto já
+// desembrulhado; quem faz o parse é a borda, não o reducer.
+const dadosDasTools = (estado) =>
+  estado.steps.filter((s) => s.tipo === "resultado_de_tool" && s.dados !== null);
+
 /* =========================================================================
    CASCA DESCARTÁVEL — daqui para baixo é página, não é o modelo.
    ========================================================================= */
@@ -307,8 +340,8 @@ const PASSO_DO_RELOGIO = {
   on_chat_model_stream: 40,
   on_chat_model_end: 80,
   on_tool_start: 5,
-  on_tool_end: 2000,
-  on_tool_error: 2000,
+  on_tool_end: 5000,
+  on_tool_error: 5000,
 };
 
 let estado = estadoInicial(FIXTURE.message);
@@ -380,7 +413,7 @@ const ROTEIROS = [
       ["Chegam os 10 tokens da passada 1", () => avancar(10)],
       ["Passada 1 termina", () => avancar(1)],
       ["A tool começa", () => avancar(1)],
-      ["A tool termina (2s depois)", () => avancar(1)],
+      ["A tool termina (5s depois)", () => avancar(1)],
       ["Passada 2 começa", () => avancar(1)],
       ["Chegam os 22 tokens do texto", () => avancar(22)],
       ["Passada 2 termina com 'stop'", () => avancar(1)],
@@ -438,7 +471,8 @@ const DECISOES = [
   ["Latência é leitura do cliente", "Calculada na chegada dos eventos, dentro do reducer, a partir do comecouEm do step da tool. O AC-06 proíbe evento custom, então não há alternativa no servidor."],
   ["Stream morto não é evento", "fecharStream() é uma função à parte: quem sabe que o fio fechou é o transporte, e 'morta' é a conclusão pela ausência de 'stop'."],
   ["O feedback visual é DERIVADO, não guardado", "aparencia(step, status) traduz o estado nas três caras pedidas: spinner 'Pensando' na passada 1, barra crescendo enquanto a chamada de tool está aberta, texto aparecendo token a token na passada 2. Nenhum evento diz 'mostre o spinner' — se a aparência fosse um campo no estado, o reducer precisaria conhecer a tela."],
-  ["A barra para em 92%", "O cliente não sabe quanto a tool vai demorar (a API não manda progresso e o AC-06 proíbe evento custom). Então a barra cresce sozinha e só é completada pela chegada do on_tool_end — barra determinística seria mentira."],
+  ["Uma barra só para a corrida inteira", "Não uma por step: o grafo é sequencial, então só existe uma coisa em andamento por vez. progressoDaCorrida(estado) diz qual é a fase, e a barra única lá em cima reflete ela — na fase da tool ela cresce sozinha e para em 88%, porque o cliente não sabe a duração (a API não manda progresso e o AC-06 proíbe evento custom)."],
+  ["O JSON da tool reaparece no fim", "O texto final diz '22°C'; o bloco de dados no fim mostra de onde isso veio. O parse da string do ToolMessage acontece na borda (junto do envelope LC), então o step guarda a string crua E o objeto pronto."],
 ];
 
 /* ---- Render ------------------------------------------------------------- */
@@ -453,14 +487,12 @@ const RENDERERS = {
   pensou: () => `<div class="spinner-linha"><span class="check">✓</span><span class="vazio">Pensei — esta passada não escreveu texto, só pediu a tool</span></div>`,
   streamando: (s) => `<span>${esc(s.rascunho)}</span><span class="cursor">▋</span>`,
   final: (s) => `<b>${esc(s.final)}</b>`,
-  rodando: (s) => `
-    <code>${esc(s.nome)}(${esc(JSON.stringify(s.argumentos))})</code>
-    <div class="barra"><div class="barra-fill"></div></div>
-    <div class="meta">chamando a tool…</div>`,
+  rodando: (s) => `<code>${esc(s.nome)}(${esc(JSON.stringify(s.argumentos))})</code>
+    <div class="meta">esperando a tool responder… (a barra da corrida está lá em cima)</div>`,
   chamada: (s) => `<code>${esc(s.nome)}(${esc(JSON.stringify(s.argumentos))})</code>
-    <div class="barra"><div class="barra-fill cheia"></div></div>
     <div class="meta">terminou em ${s.terminouEm - s.comecouEm} ms</div>`,
-  resultado: (s) => `<code>${esc(s.saida)}</code><div class="meta">latência: ${s.latenciaMs} ms</div>`,
+  resultado: (s) => `<pre class="json">${esc(JSON.stringify(s.dados ?? s.saida, null, 2))}</pre>
+    <div class="meta">latência: ${s.latenciaMs} ms</div>`,
   erro: (s) => `<span style="color:var(--err)">${esc(s.erro)}</span><div class="meta">latência até falhar: ${s.latenciaMs} ms</div>`,
   interrompido: (s) =>
     `<div class="spinner-linha"><span class="check" style="color:var(--err)">✕</span><span class="vazio">interrompido — o fio fechou aqui${s.rascunho ? ": “" + esc(s.rascunho) + "”" : ""}</span></div>`,
@@ -478,14 +510,31 @@ function renderStep(s) {
   return `<div class="step ${s.tipo}${novo ? " mudou" : ""}"><div class="tipo">${CABECA[cara]}</div>${RENDERERS[cara](s)}</div>`;
 }
 
+// O JSON da tool reaparece no fim do streaming, junto da resposta: o texto
+// final diz "22 graus", este bloco mostra DE ONDE veio. So aparece quando a
+// corrida acabou -- durante a corrida ele ja esta no step do resultado.
+function renderDados() {
+  if (estado.status === "correndo") return "";
+  const dados = dadosDasTools(estado);
+  if (!dados.length) return "";
+  return dados
+    .map((s) => `<div class="dados"><div class="tipo">dados que a resposta usou · ${esc(s.nome)}</div>
+      <pre class="json">${esc(JSON.stringify(s.dados, null, 2))}</pre></div>`)
+    .join("");
+}
+
 function render() {
   const lidos = cursor;
   const caras = estado.steps.map((s) => aparencia(s, estado.status));
+  const progresso = progressoDaCorrida(estado);
   $("estado").innerHTML = `
     <div class="meta">pergunta: <b>${esc(estado.mensagem)}</b></div>
     <div class="meta">eventos lidos do fio: ${lidos} de ${FIXTURE.events.length} · relógio simulado: ${relogio} ms ·
       status: <span class="status ${estado.status}">${estado.status}</span></div>
+    <div class="faixa"><div class="faixa-fill ${progresso.fase}"></div></div>
+    <div class="meta">${esc(progresso.rotulo)}</div>
     <div style="margin-top:14px">${estado.steps.map(renderStep).join("") || '<span class="vazio">nenhum step ainda</span>'}</div>
+    ${renderDados()}
     <div class="meta" style="margin-top:10px">${estado.steps.length} steps no estado · aparências: ${caras.join(", ") || "—"}</div>`;
 
   $("erro-area").innerHTML = ultimoErro
