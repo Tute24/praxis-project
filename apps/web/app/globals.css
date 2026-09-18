@@ -1,0 +1,214 @@
+/* Tokens no espirito do shadcn: neutro, uma cor de acento, raio maximo
+   `rounded-md` (6px). Sem gradiente e sem borda colorida de "IA" -- preferencia
+   registrada no mapa, nao decisao a tomar. */
+:root {
+  --fundo: #fbfbfc;
+  --cartao: #ffffff;
+  --texto: #14161a;
+  --apagado: #6b7280;
+  --linha: #e5e7eb;
+  --acento: #2f5fd8;
+  --ok: #0f7b4f;
+  --erro: #b3261e;
+  --raio: 6px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 40px 24px 96px;
+  background: var(--fundo);
+  color: var(--texto);
+  font: 15px/1.55 ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+}
+
+main {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 20px;
+  margin: 0 0 4px;
+}
+
+code,
+pre {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.apagado {
+  color: var(--apagado);
+}
+
+.meta {
+  color: var(--apagado);
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+
+/* ---- Formulario --------------------------------------------------------- */
+
+form {
+  display: flex;
+  gap: 8px;
+  margin: 24px 0 8px;
+}
+
+input[type="text"] {
+  flex: 1;
+  font: inherit;
+  padding: 9px 12px;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  background: var(--cartao);
+  color: var(--texto);
+}
+
+input[type="text"]:focus {
+  outline: 2px solid var(--acento);
+  outline-offset: -1px;
+}
+
+button {
+  font: inherit;
+  padding: 9px 16px;
+  border: 1px solid var(--acento);
+  border-radius: var(--raio);
+  background: var(--acento);
+  color: #fff;
+  cursor: pointer;
+}
+
+button.secundario {
+  background: var(--cartao);
+  border-color: var(--linha);
+  color: var(--texto);
+}
+
+button[disabled] {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ---- A barra unica da corrida ------------------------------------------- */
+
+.faixa {
+  height: 4px;
+  background: var(--linha);
+  border-radius: var(--raio);
+  overflow: hidden;
+  margin-top: 18px;
+}
+
+.faixa-fill {
+  height: 100%;
+  width: 0;
+  background: var(--acento);
+  transition: width 0.3s linear;
+}
+
+.faixa-fill.esperando {
+  width: 4%;
+}
+.faixa-fill.pensando {
+  width: 18%;
+}
+/* Na fase da tool a barra cresce sozinha e PARA em 88%: o cliente nao sabe a
+   duracao (a API nao manda progresso e o AC-06 proibe evento custom). */
+.faixa-fill.tool {
+  width: 88%;
+  transition: width 5s ease-out;
+}
+.faixa-fill.texto {
+  width: 94%;
+}
+.faixa-fill.completa {
+  width: 100%;
+  background: var(--ok);
+}
+.faixa-fill.morta {
+  width: 100%;
+  background: var(--erro);
+}
+
+/* ---- Steps -------------------------------------------------------------- */
+
+.steps {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.step {
+  background: var(--cartao);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  padding: 12px 14px;
+}
+
+.step .rotulo {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--apagado);
+  margin-bottom: 6px;
+}
+
+.json {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cursor {
+  animation: pisca 1s steps(2) infinite;
+}
+
+.spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--linha);
+  border-top-color: var(--acento);
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: -2px;
+  animation: gira 0.8s linear infinite;
+}
+
+.aviso {
+  margin-top: 20px;
+  border: 1px solid var(--erro);
+  border-radius: var(--raio);
+  padding: 12px 14px;
+  color: var(--erro);
+  background: var(--cartao);
+}
+
+@keyframes gira {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pisca {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner,
+  .cursor {
+    animation: none;
+  }
+  .faixa-fill {
+    transition: none;
+  }
+}
